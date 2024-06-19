@@ -1,5 +1,4 @@
 --[[
-
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
@@ -90,8 +89,18 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+--path
+vim.o.path = 'c:/Users/ASUS1/Project/**'
+
+-- utf-8
+vim.g.encoding = 'UTF-8'
+vim.o.fileencoding = 'utf-8'
+
+--complier
+-- vim.o.makeprg = 'g++'
+
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -136,6 +145,11 @@ vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
+--change tab
+vim.o.expandtab = true
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
+
 -- Sets how neovim will display certain whitespace in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -150,30 +164,77 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
+--Auto refresh buffers
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+--  Change mode between replace mode and insert mode
+vim.keymap.set('c', '<A-a>', '<Insert>', { desc = 'Change into insert mode' })
+vim.keymap.set('i', '<A-a>', '<Insert>', { desc = 'Change into replace mode' })
+
+--close s
+vim.keymap.set('n', 's', '')
+
+--insert a blank row in normal mode
+vim.keymap.set('n', '<leader>o', 'o<Esc>k', { desc = 'Insert a blank row below the cursor' })
+vim.keymap.set('n', '<leader>O', 'O<Esc>j', { desc = 'Insert a blank row above the cursor' })
+
+--Complie file
+vim.keymap.set('n', '<leader>rc', ': w | make<CR>', { desc = 'Complie' })
+
+--Save
+vim.keymap.set({ 'n', 'v' }, '<C-s>', ': w<CR>', { desc = 'Save current file' })
+vim.keymap.set('i', '<C-s>', '<C-o>:w<CR>', { desc = 'Save current file' })
+
+--<Delete>
+vim.keymap.set('i', '<S-BS>', '<Del>', { noremap = true, silent = true, desc = '<Delete>' })
+
+--Leetcode shortcuts
+vim.keymap.set({ 'n', 'v' }, '<leader>lr', ':Leet run<CR>', { desc = 'Run code in Leetcode' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ls', ':Leet submit<CR>', { desc = 'Submit code in Leetcode' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ld', ':Leet desc<CR>', { desc = 'Switch description in Leetcode' })
+vim.keymap.set({ 'n', 'v' }, '<leader>lc', ':Leet console<CR>', { desc = 'Open console in Leetcode' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ll', ':Leet list<CR>', { desc = 'Opens a problem list picker in Leetcode' })
+vim.keymap.set({ 'n', 'v' }, '<leader>le', ':w |Leet exit<CR>', { desc = 'Quit leetcode.nvim' })
+
+-- 命令行和插入模式下 Ctrl+j/k  上一个下一个
+--vim.keymap.set({ 'c', 'i' }, '<A-j>', '<C-n>', { noremap = false })
+--vim.keymap.set({ 'c', 'i' }, '<A-k>', '<C-p>', { noremap = false })
+
+--Current line move
+
+--Visual line move
+vim.keymap.set('v', 'J', ":<C-u>'>+1m '<-1<CR> | gv", { desc = '' })
+vim.keymap.set('v', 'K', ":<C-u>'<-1m '><CR> | gv", { desc = '' })
+
+--overwrite : in invert mode
+vim.keymap.set('i', ':', ':', { silent = true })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+--Quick quit
+vim.keymap.set('n', '<C-c>', ':wq<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
---
+
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('n', '<A-t>', ':vs | terminal powershell.exe<CR>a', { desc = 'Open powershell in new right window' })
+vim.keymap.set('t', '<S-n>', '<C-\\><C-n>', { desc = 'normal mode' })
+vim.keymap.set('t', '<A-q>', '<C-\\><C-n> | :q<CR>', { desc = 'Exit terminal in terminal mode' })
+vim.keymap.set('n', '<A-q>', ':q<CR>', { desc = 'Exit terminal in normal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+--vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
@@ -182,10 +243,16 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set({ 'n', 'v' }, '<A-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set({ 'n', 'v' }, '<A-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set({ 'n', 'v' }, '<A-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set({ 'n', 'v' }, '<A-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+--in terminal mode
+vim.keymap.set('t', '<A-h>', '<C-\\><C-n> | <C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('t', '<A-l>', '<C-\\><C-n> | <C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('t', '<A-j>', '<C-\\><C-n> | <C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('t', '<A-k>', '<C-\\><C-n> | <C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -344,11 +411,11 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -799,6 +866,35 @@ require('lazy').setup({
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
+  },
+
+  --leetcode
+  {
+    'kawre/leetcode.nvim',
+    build = ':TSUpdate html',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'nvim-lua/plenary.nvim', -- required by telescope
+      'MunifTanjim/nui.nvim',
+
+      -- optional
+      'nvim-treesitter/nvim-treesitter',
+      'rcarriga/nvim-notify',
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      lang = 'python',
+      cn = { -- leetcode.cn
+        enabled = true, ---@type boolean
+        translator = true, ---@type boolean
+        translate_problems = true, ---@type boolean
+      },
+      -- configuration goes here
+    },
+  },
+  --nvim-dap
+  {
+    'mfussenegger/nvim-dap',
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
