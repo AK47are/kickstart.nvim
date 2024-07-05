@@ -40,35 +40,6 @@ What is Kickstart?
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
 
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know how the Neovim basics, you can skip this step)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not sure exactly what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or neovim features used in kickstart.
-
    NOTE: Look for lines like this
 
     Throughout the file. These are for you, the reader, to help understand what is happening.
@@ -89,15 +60,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
---path
 vim.o.path = 'c:/Users/ASUS1/Project/**'
 
 -- utf-8
 vim.g.encoding = 'UTF-8'
 vim.o.fileencoding = 'utf-8'
-
---complier
--- vim.o.makeprg = 'g++'
 
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
@@ -111,7 +78,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, for help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -147,8 +114,8 @@ vim.opt.splitbelow = true
 
 --change tab
 vim.o.expandtab = true
-vim.o.tabstop = 4
-vim.o.shiftwidth = 4
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
 
 -- Sets how neovim will display certain whitespace in the editor.
 --  See `:help 'list'`
@@ -168,76 +135,39 @@ vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
---  Change mode between replace mode and insert mode
-vim.keymap.set('c', '<A-a>', '<Insert>', { desc = 'Change into insert mode' })
-vim.keymap.set('i', '<A-a>', '<Insert>', { desc = 'Change into replace mode' })
+vim.keymap.set({ 'c', 'i' }, '<A-a>', '<Insert>', { desc = 'Switch mode: replace and insert' })
 
---close s
+-- close s
 vim.keymap.set('n', 's', '')
 
---insert a blank row in normal mode
-vim.keymap.set('n', '<leader>o', 'o<Esc>k', { desc = 'Insert a blank row below the cursor' })
-vim.keymap.set('n', '<leader>O', 'O<Esc>j', { desc = 'Insert a blank row above the cursor' })
+vim.keymap.set('n', '<leader>o', 'o<Esc>k', { silent = true, desc = 'Insert a blank row below the cursor' })
+vim.keymap.set('n', '<leader>O', 'O<Esc>j', { silent = true, desc = 'Insert a blank row above the cursor' })
 
---Complie file
-vim.keymap.set('n', '<leader>rc', ': w | make<CR>', { desc = 'Complie' })
+vim.keymap.set('n', '<leader>rm', ': wa! | make<CR>', { desc = 'Make' })
 
---Save
-vim.keymap.set({ 'n', 'v' }, '<C-s>', ': w<CR>', { desc = 'Save current file' })
-vim.keymap.set('i', '<C-s>', '<C-o>:w<CR>', { desc = 'Save current file' })
+vim.keymap.set('n', '<C-s>', ': w<CR>', { desc = 'Save current file' })
 
---<Delete>
-vim.keymap.set('i', '<S-BS>', '<Del>', { noremap = true, silent = true, desc = '<Delete>' })
-
---Leetcode shortcuts
-vim.keymap.set({ 'n', 'v' }, '<leader>lr', ':Leet run<CR>', { desc = 'Run code in Leetcode' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ls', ':Leet submit<CR>', { desc = 'Submit code in Leetcode' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ld', ':Leet desc<CR>', { desc = 'Switch description in Leetcode' })
-vim.keymap.set({ 'n', 'v' }, '<leader>lc', ':Leet console<CR>', { desc = 'Open console in Leetcode' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ll', ':Leet list<CR>', { desc = 'Opens a problem list picker in Leetcode' })
-vim.keymap.set({ 'n', 'v' }, '<leader>le', ':w |Leet exit<CR>', { desc = 'Quit leetcode.nvim' })
-
--- 命令行和插入模式下 Ctrl+j/k  上一个下一个
---vim.keymap.set({ 'c', 'i' }, '<A-j>', '<C-n>', { noremap = false })
---vim.keymap.set({ 'c', 'i' }, '<A-k>', '<C-p>', { noremap = false })
-
+vim.keymap.set('i', '<S-<BS>>', '<Del>', { desc = '<Delete>' })
 --Current line move
 
 --Visual line move
-vim.keymap.set('v', 'J', ":<C-u>'>+1m '<-1<CR> | gv", { desc = '' })
-vim.keymap.set('v', 'K', ":<C-u>'<-1m '><CR> | gv", { desc = '' })
-
---overwrite : in invert mode
-vim.keymap.set('i', ':', ':', { silent = true })
+vim.keymap.set('v', 'J', ":<C-u>'>+1m '<-1<CR> | gv", { silent = true, desc = '' })
+vim.keymap.set('v', 'K', ":<C-u>'<-1m '><CR> | gv", { silent = true, desc = '' })
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
---Quick quit
-vim.keymap.set('n', '<C-c>', ':wq<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
 
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('n', '<A-t>', ':vs | terminal powershell.exe<CR>a', { desc = 'Open powershell in new right window' })
-vim.keymap.set('t', '<S-n>', '<C-\\><C-n>', { desc = 'normal mode' })
-vim.keymap.set('t', '<A-q>', '<C-\\><C-n> | :q<CR>', { desc = 'Exit terminal in terminal mode' })
-vim.keymap.set('n', '<A-q>', ':q<CR>', { desc = 'Exit terminal in normal mode' })
 
--- TIP: Disable arrow keys in normal mode
---vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('t', '<S-n>', '<C-\\><C-n>', { desc = 'normal mode' })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -599,7 +529,15 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {
+          cmd = {
+            'clangd',
+            '--fallback-style=Google',
+          },
+          init_options = {
+            clangdFileStatus = true,
+          },
+        },
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -646,14 +584,15 @@ require('lazy').setup({
       --    :Mason
       --
       --  You can press `g?` for help in this menu
+
       require('mason').setup()
 
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
+      -- Ensure clangd and other tools are installed
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format lua code
       })
+
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
@@ -681,6 +620,7 @@ require('lazy').setup({
       },
       formatters_by_ft = {
         lua = { 'stylua' },
+        python = { 'autopep8' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -755,7 +695,6 @@ require('lazy').setup({
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
           ['<C-Space>'] = cmp.mapping.complete {},
-
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
           --  function $name($args)
@@ -868,33 +807,22 @@ require('lazy').setup({
     end,
   },
 
-  --leetcode
   {
-    'kawre/leetcode.nvim',
-    build = ':TSUpdate html',
-    dependencies = {
-      'nvim-telescope/telescope.nvim',
-      'nvim-lua/plenary.nvim', -- required by telescope
-      'MunifTanjim/nui.nvim',
-
-      -- optional
-      'nvim-treesitter/nvim-treesitter',
-      'rcarriga/nvim-notify',
-      'nvim-tree/nvim-web-devicons',
-    },
-    opts = {
-      lang = 'python',
-      cn = { -- leetcode.cn
-        enabled = true, ---@type boolean
-        translator = true, ---@type boolean
-        translate_problems = true, ---@type boolean
-      },
-      -- configuration goes here
-    },
-  },
-  --nvim-dap
-  {
-    'mfussenegger/nvim-dap',
+    'ethanholz/nvim-lastplace',
+    lazy = false,
+    event = { 'User FileOpened' },
+    config = function()
+      require('nvim-lastplace').setup {
+        lastplace_ignore_buftype = { 'quickfix', 'nofile', 'help' },
+        lastplace_ignore_filetype = {
+          'gitcommit',
+          'gitrebase',
+          'svn',
+          'hgcommit',
+        },
+        lastplace_open_folds = true,
+      }
+    end,
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
@@ -906,15 +834,16 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.autopairs',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you have a Nerd Font, set icons to an empty table which will use the
@@ -936,6 +865,4 @@ require('lazy').setup({
     },
   },
 })
-
 -- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et

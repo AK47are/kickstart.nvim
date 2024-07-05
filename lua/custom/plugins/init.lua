@@ -2,4 +2,5 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
+-- 设置 im-select 的路径
 return {}
