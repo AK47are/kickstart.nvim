@@ -1,20 +1,25 @@
-vim.g.terminal_shell = 'powershell.exe'
+-- vim.g.terminal_shell = 'powershell.exe'
 -- 定义一个检查文件是否存在的函数
-vim.keymap.set('n', '<leader>rc', function()
-  if vim.fn.filereadable 'main.cpp' == 1 then
-    vim.cmd 'H clang main.cpp'
-  else
-    print 'main.cpp 不存在于当前文件夹中'
-  end
-end, { desc = 'Only compile main.cpp' })
-
 vim.keymap.set('n', '<leader>ra', function()
-  if vim.fn.filereadable 'a.exe' == 1 then
-    vim.cmd 'H ./a.exe'
-  else
-    print 'a.exe 不存在于当前文件夹中'
-  end
-end, { desc = 'Run a.exe' })
+  print 'OKKKKK\n'
+  -- local files
+  -- if vim.fn.has 'win32' == 1 then
+  --   files = { 'build/%.exe', '%.exe', 'a.exe' }
+  -- else
+  --   files = { 'build/%.out', '%.out', 'a.out' }
+  -- end
+  -- local is_find = false
+  -- for i = 1, #files do
+  --   if vim.fn.filereadable(files[i]) == 1 then
+  --     vim.cmd(':H ' .. files[i])
+  --     is_find = true
+  --     break
+  --   end
+  -- end
+  -- if not is_find then
+  --   print '没有找到可执行文件！\n'
+  -- end
+end, { desc = 'Run' })
 
 return {
   {

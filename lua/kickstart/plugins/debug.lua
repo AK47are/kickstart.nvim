@@ -1,3 +1,5 @@
+-- debug.lua
+--
 -- Shows how to use the DAP plugin to debug your code.
 --
 -- Primarily focused on configuring the debugger for Go, but can
@@ -22,10 +24,52 @@ return {
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
   },
+  keys = function(_, keys)
+    local dap = require 'dap'
+    local dapui = require 'dapui'
+    return {
+      -- Basic debugging keymaps, feel free to change to your liking!
+      { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
+      { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
+      { '<F2>', dap.step_over, desc = 'Debug: Step Over' },
+      { '<F3>', dap.step_out, desc = 'Debug: Step Out' },
+      { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
+      {
+        '<leader>B',
+        function()
+          dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+        end,
+        desc = 'Debug: Set Breakpoint',
+      },
+      -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+      { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
+      unpack(keys),
+    }
+  end,
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
 
+    -- GDB 适配器
+    dap.adapters.cpp = {
+      type = 'executable',
+      command = 'gdb', -- GDB 的路径
+      args = { '--interpreter=mi' }, -- 使用机器接口
+    }
+
+    -- C++ 调试配置
+    dap.configurations.cpp = {
+      {
+        name = 'C++ Debug',
+        type = 'cpp',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file') -- 输入可执行文件路径
+        end,
+        cwd = '${workspaceFolder}', -- 工作目录
+        stopAtEntry = false,
+      },
+    }
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
@@ -40,19 +84,9 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'cpptools',
-        'debugpy',
+        -- 'delve',
       },
     }
-
-    -- Basic debugging keymaps, feel free to change to your liking!
-    vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
-    vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
-    vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
-    vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
-    vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-    vim.keymap.set('n', '<leader>B', function()
-      dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-    end, { desc = 'Debug: Set Breakpoint' })
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -76,20 +110,24 @@ return {
       },
     }
 
-    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-    vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
-
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    -- Install golang specific config
-    require('dap-go').setup {
-      delve = {
-        -- On Windows delve must be run attached or it crashes.
-        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-        detached = vim.fn.has 'win32' == 0,
-      },
-    }
+    -- dap.configurations.cpp = {
+    --   {
+    --     type = 'c++',
+    --     request = 'launch',
+    --     name = 'C++ Debug',
+    --   },
+    -- }
+    --   -- Install golang specific config
+    --   require('dap-go').setup {
+    --     delve = {
+    --       -- On Windows delve must be run attached or it crashes.
+    --       -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
+    --       detached = vim.fn.has 'win32' == 0,
+    --     },
+    --   }
   end,
 }

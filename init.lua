@@ -60,20 +60,28 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-vim.o.path = 'c:/Users/ASUS1/Project/**'
-
+vim.g.tokyonight_transparent = true
 -- utf-8
 vim.g.encoding = 'UTF-8'
 vim.o.fileencoding = 'utf-8'
 
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
+-- 允许多字节文字换行，例如中文。
+vim.opt.formatoptions:append 'm'
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+--close auto comments.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    vim.opt_local.formatoptions:remove { 'r', 'o' }
+  end,
+})
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, for help with jumping.
@@ -93,6 +101,9 @@ vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.opt.breakindent = true
+
+--自动设置为当前打开文件的路径。
+vim.opt.autochdir = true
 
 -- Save undo history
 vim.opt.undofile = true
@@ -143,12 +154,25 @@ vim.keymap.set('n', 's', '')
 vim.keymap.set('n', '<leader>o', 'o<Esc>k', { silent = true, desc = 'Insert a blank row below the cursor' })
 vim.keymap.set('n', '<leader>O', 'O<Esc>j', { silent = true, desc = 'Insert a blank row above the cursor' })
 
-vim.keymap.set('n', '<leader>rm', ': wa! | make<CR>', { desc = 'Make' })
+vim.keymap.set('n', '<leader>rm', function()
+  -- 获取当前文件的目录路径
+  if vim.fn.filereadable 'Makefile' == 1 then
+    vim.cmd '!make'
+  else
+    local filetype = vim.bo.filetype
+    if filetype == 'python' then
+      vim.cmd('!python3 ' .. vim.fn.expand '%')
+    elseif filetype == 'c' then
+      vim.cmd '!gcc %'
+    elseif filetype == 'cpp' then
+      vim.cmd '!g++ %'
+    else
+      print 'No associated command for this file type.'
+    end
+  end
+end, { noremap = true, silent = true })
 
 vim.keymap.set('n', '<C-s>', ': w<CR>', { desc = 'Save current file' })
-
-vim.keymap.set('i', '<S-<BS>>', '<Del>', { desc = '<Delete>' })
---Current line move
 
 --Visual line move
 vim.keymap.set('v', 'J', ":<C-u>'>+1m '<-1<CR> | gv", { silent = true, desc = '' })
@@ -274,13 +298,21 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>c', group = 'Code' }, -- 将 <leader>c 分组到 "Code"
+        { '<leader>cR', '<cmd>lua vim.lsp.buf.rename()<CR>', desc = 'Rename' }, -- 子键映射
+        { '<leader>d', group = 'Document' }, -- 将 <leader>d 分组到 "Document"
+        { '<leader>s', group = 'Search' }, -- 将 <leader>s 分组到 "Search"
+        { '<leader>w', group = 'Workspace' }, -- 将 <leader>w 分组到 "Workspace"
+        { '<leader>wc', proxy = '<cmd>w<CR>', desc = 'Save File' }, -- 使用代理
       }
+      -- require('which-key').register {
+      -- ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
+      -- ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+      -- ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
+      -- ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+      -- ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+      -- }
     end,
   },
 
